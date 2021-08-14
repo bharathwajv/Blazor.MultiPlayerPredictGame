@@ -1,0 +1,18 @@
+﻿<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Image="Images/SampleImage.jpg" />
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body2">@PlayerID</MudText>
+            <MudChip Disabled="true" Color="@Status">Online</MudChip>
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudCard>
+
+@code {
+    [Parameter] public string Class { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public string PlayerID { get; set; } = "PlayerID";
+    [Parameter] public Color Status { get; set; } = Color.Success;
+}
