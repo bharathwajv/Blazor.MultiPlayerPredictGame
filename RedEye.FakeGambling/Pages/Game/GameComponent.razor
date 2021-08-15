@@ -34,11 +34,30 @@
             </MudText>
             @if (isMutiplayer)
             {
-                <MudExpansionPanels>
-                    <MudExpansionPanel Text="Players in lobby">
-                        <MudText Color="Color.Success">Success</MudText>
-                    </MudExpansionPanel>
-                </MudExpansionPanels>
+               
+        <MudExpansionPanels>
+
+            <MudText Typo="Typo.body2" Color="Color.Success" Align="Align.Center" Class="my-4">
+               Unique Id: @HubConnectionId
+            </MudText>
+            
+            @if (isCreateLobby)
+
+            {
+                <MudExpansionPanel Text="You are the Leader!!">
+                    <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                    </MudText>
+                </MudExpansionPanel>
+            }
+            else
+            {<MudExpansionPanel Text="Joined party Successfully!!">
+                    <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                    </MudText>
+                </MudExpansionPanel>
+            }
+            @*<MudText Color="Color.Success">Success</MudText>*@
+
+        </MudExpansionPanels>
             }
         </EditForm>
     </MudItem>

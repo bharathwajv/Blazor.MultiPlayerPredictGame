@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using RedEye.FakeGambling.Data;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,7 +8,7 @@ namespace RedEye.FakeGambling.Pages.Game
 {
     public class LeaderboardBase : ComponentBase
     {
-        
+
         public List<string> messages = new List<string>();
         public string nametag;
         public string gameInfo;
@@ -20,6 +19,7 @@ namespace RedEye.FakeGambling.Pages.Game
         {
             nametag = _gameService.NameTag;
 
+
             _hubService.hubConnection.On<string, string>("ReceiveMessage", (nametag, message) =>
             {
                 var encodedMsg = $"{nametag}: {message}";
@@ -27,7 +27,10 @@ namespace RedEye.FakeGambling.Pages.Game
                 StateHasChanged();
             });
 
-            await _hubService.hubConnection.StartAsync();
+            if (!IsHubConnected)
+            {
+                await _hubService.hubConnection.StartAsync();
+            }
         }
 
         public async Task Send()
@@ -36,9 +39,9 @@ namespace RedEye.FakeGambling.Pages.Game
             await _hubService.hubConnection.SendAsync("SendMessage", nametag, gameInfo);
         }
 
-        public bool IsConnected =>
+        public bool IsHubConnected =>
             _hubService.hubConnection.State == HubConnectionState.Connected;
 
-       
+
     }
 }

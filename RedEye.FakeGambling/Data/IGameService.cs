@@ -9,6 +9,9 @@
         decimal UserCash { get; set; }
         string NameTag { get; set; }
         bool isCreatePlayer { get; set; }
+        decimal JoinPlayerCrashPoint { get; set; }
+        decimal LastJoinPlayerCrashPoint { get; set; }
+
         void NewCrashPoint();
         void SetGeneralInfo();
     }

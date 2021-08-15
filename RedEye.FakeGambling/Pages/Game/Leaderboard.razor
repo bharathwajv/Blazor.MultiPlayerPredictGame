@@ -1,7 +1,7 @@
 ﻿@page "/Game/Leaderboard"
 @inherits LeaderboardBase
 
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<button @onclick="Send" disabled="@(!IsHubConnected)">Send</button>
 
 <hr>
 

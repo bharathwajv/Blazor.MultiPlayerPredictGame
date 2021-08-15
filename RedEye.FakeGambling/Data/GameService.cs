@@ -13,6 +13,7 @@ namespace RedEye.FakeGambling.Data
         public int RandomNumber { get; set; }
         public decimal CrashPoint { get; set; }
         public decimal JoinPlayerCrashPoint { get; set; }
+        public decimal LastJoinPlayerCrashPoint { get; set; }
         public string NameTag { get; set; }
 
         public bool isCreatePlayer { get; set; }

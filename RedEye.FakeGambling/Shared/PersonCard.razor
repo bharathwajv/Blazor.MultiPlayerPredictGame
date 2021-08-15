@@ -18,7 +18,7 @@
     [Parameter] public string PlayerID { get; set; }
     [Parameter] public Color Status { get; set; } = Color.Success;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _gameService.SetGeneralInfo();
         PlayerID = _gameService.NameTag;

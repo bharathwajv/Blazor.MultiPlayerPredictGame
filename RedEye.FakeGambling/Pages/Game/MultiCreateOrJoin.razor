@@ -3,17 +3,20 @@
 @inject HubService _hubService
 @inject NavigationManager _navMagager
 @inject IGameService _game
-<MudGrid>
-    <MudItem xs="12" md="1">
-        <MudRadioGroup @bind-SelectedOption="@SelectedOption">
-            <MudRadio Option="@("Create")" Color="Color.Primary">Create Lobby</MudRadio>
-            <MudRadio Option="@("Join")" Color="Color.Secondary">Join Lobby</MudRadio>
-        </MudRadioGroup>
-    </MudItem>
-    <div class="d-flex align-center">
-        <MudButton Variant="Variant.Outlined" OnClick="SetLobby"> @SelectedOption</MudButton>
-        <MudText Class="ml-4">Selected Option:</MudText>
-    </div>
+
+<MudGrid Class="d-flex justify-center py-2 px-1 mt-6">
+    <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 50vh;">
+        <div class="d-flex flex-column mud-width-full">
+            @*<MudItem xs="12" md="1">*@
+                <MudRadioGroup Class="d-flex justify-center py-2 px-1 mt-6" @bind-SelectedOption="@SelectedOption">
+                    <MudRadio Option="@("Create")" Color="Color.Primary">Create Lobby</MudRadio>
+                    <MudRadio Option="@("Join")" Color="Color.Secondary">Join Lobby</MudRadio>
+                </MudRadioGroup>
+            @*</MudItem>*@
+            <MudButton Class="d-flex justify-center py-2 px-1 mt-6" Variant="Variant.Outlined" OnClick="SetLobby"> @SelectedOption</MudButton>
+        </div>
+    </MudContainer>
+
 </MudGrid>
 @code {
     bool lobbyType;
