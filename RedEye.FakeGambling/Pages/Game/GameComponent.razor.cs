@@ -12,12 +12,11 @@ namespace RedEye.FakeGambling.Pages.Game
         [Inject] private ISnackbar Snackbar { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] private IGameService _gameService { get; set; }
-
         [Parameter] public bool isMutiplayer { get; set; } = false;
         public decimal Multiplier { get; set; } = 1.00M;
         public Severity MultiplierColor { get; set; } = Severity.Normal;
 
-        public PlayerInfo playerInfo = new() { BetAmount = 1, AutoCashOut = 1000, PlayerBal = 10 };
+        public PlayerInfo playerInfo;
         public bool isRunning = false;
         public bool disableInputs = false;
         public bool cashOutDisable = true;
@@ -25,6 +24,7 @@ namespace RedEye.FakeGambling.Pages.Game
         public List<decimal> CrashPointList = new();
         protected override void OnInitialized()
         {
+            playerInfo = new() { BetAmount = 1, AutoCashOut = 1000, PlayerBal = 10, NameTag = _gameService.NameTag };
             StateHasChanged();
         }
         public void SetisRunning(bool isRunning)
@@ -119,14 +119,12 @@ namespace RedEye.FakeGambling.Pages.Game
             if (_gameService.UserCash <= 0)
             {
                 Snackbar.Add("You Lost! No Cash Available", Severity.Error, config => { config.HideIcon = true; });
-                Values.ForcedExit = true;
             }
             StateHasChanged();
         }
-        public async void Dispose()
+        public void Dispose()
         {
-           //clear connection
+            //clear connection
         }
-
     }
 }

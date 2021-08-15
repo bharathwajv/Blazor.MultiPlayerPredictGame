@@ -1,4 +1,6 @@
-﻿<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
+﻿@using RedEye.FakeGambling.Data
+@inject IGameService _gameService;
+<MudCard Elevation="0" Square="true" Class="@Class" Style="@Style">
     <MudCardHeader>
         <CardHeaderAvatar>
             <MudAvatar Image="Images/SampleImage.jpg" />
@@ -13,6 +15,13 @@
 @code {
     [Parameter] public string Class { get; set; }
     [Parameter] public string Style { get; set; }
-    [Parameter] public string PlayerID { get; set; } = "PlayerID";
+    [Parameter] public string PlayerID { get; set; }
     [Parameter] public Color Status { get; set; } = Color.Success;
+
+    protected override void OnInitialized()
+    {
+        _gameService.SetGeneralInfo();
+        PlayerID = _gameService.NameTag;
+        StateHasChanged();
+    }
 }

@@ -7,6 +7,7 @@ namespace RedEye.FakeGambling.Hubs
     {
         public async Task SendMessage(string user, string message)
         {
+            //var sameConnection = Clients.Clients(user);
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
     }

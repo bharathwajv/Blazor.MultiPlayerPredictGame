@@ -13,5 +13,7 @@ namespace RedEye.FakeGambling.Data
         [Required]
         public decimal AutoCashOut { get; set; }
         public decimal PlayerBal { get; set; }
+        public string NameTag { get; set; }
+
     }
 }

@@ -1,4 +1,7 @@
-﻿@page "/"
+﻿@using RedEye.FakeGambling.Data;
+@page "/"
+@*@inject GameService _game*@
+@inject HubService _hubService
 @inherits LayoutComponentBase
 <MudGrid>
     <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 50vh;">
@@ -7,10 +10,16 @@
                 <MudIcon Icon="@Icons.Material.Outlined.VideogameAsset" Size="Size.Large" Style="width:100px; height:100px;" />
             </MudPaper>
             <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Primary" Link="/Game/Solo">Single Player</MudButton>
-            <MudButton Class="mb-2 pt-2 pb-2"Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/Multi">Multi Player</MudButton>
+            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/MultiCreateOrJoin">Multi Player</MudButton>
             <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Disabled="true" Link="/Game/Leaderboard">Leaderboard</MudButton>
             <MudAlert Severity="Severity.Info" Class="mt-8 mud-width-full" Style="max-width:500px;">Start playing with friends.<a>Share link</a></MudAlert>
         </div>
     </MudContainer>
 
 </MudGrid>
+@code{
+    protected override void OnInitialized()
+    {
+        _hubService.OnInit();
+    }
+}

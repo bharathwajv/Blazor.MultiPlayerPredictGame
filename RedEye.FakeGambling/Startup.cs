@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using RedEye.FakeGambling.Data;
-using Microsoft.AspNetCore.ResponseCompression;
 using RedEye.FakeGambling.Hubs;
 using System.Linq;
 
@@ -26,6 +26,7 @@ namespace RedEye.FakeGambling
             services.AddRazorPages();
             services.AddServerSideBlazor();
             _ = services.AddSingleton<IGameService, GameService>();
+            services.AddScoped<HubService>();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

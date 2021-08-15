@@ -1,5 +1,4 @@
-﻿@using RedEye.FakeGambling.Data
-@inherits GameComponentBase
+﻿@inherits GameComponentBase
 <h3>GameComponent</h3>
 
 @*<div style="max-width: 400px;">*@
@@ -7,6 +6,7 @@
     <MudItem xs=12 sm=6>
         <EditForm Model="@playerInfo" OnValidSubmit="OnValidSubmitAsync" xs="12" sm="6">
             <DataAnnotationsValidator />
+            <MudText Typo="Typo.body2">@playerInfo.NameTag</MudText>
             <MudCard>
                 <MudCardContent Class="mb-2 pt-2 pb-2">
                     <MudAlert Severity="Severity.Info" AlertTextPosition="AlertTextPosition.Start">Cash:  @playerInfo.PlayerBal</MudAlert>
@@ -34,11 +34,11 @@
             </MudText>
             @if (isMutiplayer)
             {
-            <MudExpansionPanels>
-                <MudExpansionPanel Text="Show Validation Summary">
-                    <MudText Color="Color.Success">Success</MudText>
-                </MudExpansionPanel>
-            </MudExpansionPanels>
+                <MudExpansionPanels>
+                    <MudExpansionPanel Text="Players in lobby">
+                        <MudText Color="Color.Success">Success</MudText>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
             }
         </EditForm>
     </MudItem>

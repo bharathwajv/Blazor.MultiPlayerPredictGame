@@ -5,9 +5,6 @@ namespace RedEye.FakeGambling.Data
 {
     static class Values
     {
-        // Set lost variable
-        public static bool ForcedExit = false;
-
         // Use RNGCryptoService to create a somewhat random number
         private static readonly RNGCryptoServiceProvider _generator = new RNGCryptoServiceProvider();
 
