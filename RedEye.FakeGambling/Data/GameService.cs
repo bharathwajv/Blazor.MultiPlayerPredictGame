@@ -17,7 +17,7 @@ namespace RedEye.FakeGambling.Data
         public string NameTag { get; set; }
 
         public bool isCreatePlayer { get; set; }
-
+       
         public void NewCrashPoint()
         {
             // Use RNGCryptoService function to create a very large random number, making the multiplier small.
@@ -32,5 +32,6 @@ namespace RedEye.FakeGambling.Data
             NameTag = items[rnd.Next(0, items.Length)];
             UserCash = 10.00M;
         }
+      
     }
 }

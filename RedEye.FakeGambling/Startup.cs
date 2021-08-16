@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -26,7 +28,9 @@ namespace RedEye.FakeGambling
             services.AddRazorPages();
             services.AddServerSideBlazor();
             _ = services.AddSingleton<IGameService, GameService>();
-            services.AddScoped<HubService>();
+           
+            services.AddSingleton<HubService>();
+            services.AddScoped<OnlineService>();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -44,6 +48,11 @@ namespace RedEye.FakeGambling
                 config.SnackbarConfiguration.ShowTransitionDuration = 300;
                 config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
             });
+            services.AddHangfire(config =>
+            {
+                config.UseMemoryStorage();
+            });
+            services.AddHangfireServer();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -70,6 +79,9 @@ namespace RedEye.FakeGambling
                 endpoints.MapHub<GameHub>("/gameHub");
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            app.UseHangfireDashboard("/Hangfire");
+            app.UseHangfireServer();
         }
     }
 }

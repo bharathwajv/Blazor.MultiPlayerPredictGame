@@ -1,4 +1,6 @@
-﻿namespace RedEye.FakeGambling.Data
+﻿using System.Threading.Tasks;
+
+namespace RedEye.FakeGambling.Data
 {
     public interface IGameService
     {

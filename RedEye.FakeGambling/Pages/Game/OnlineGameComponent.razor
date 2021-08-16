@@ -1,0 +1,62 @@
+﻿@inherits OnlineGameComponentBase
+<h3>GameComponent</h3>
+
+@*<div style="max-width: 400px;">*@
+<MudGrid>
+    <MudItem xs=12 sm=6>
+        <EditForm Model="@playerInfo" OnValidSubmit="OnValidSubmitAsync" xs="12" sm="6">
+            <DataAnnotationsValidator />
+            <MudText Typo="Typo.body2">@playerInfo.NameTag</MudText>
+            <MudCard>
+                <MudCardContent Class="mb-2 pt-2 pb-2">
+                    <MudAlert Severity="Severity.Info" AlertTextPosition="AlertTextPosition.Start">Cash:  @playerInfo.PlayerBal</MudAlert>
+                    <MudItem xs="12" Class="mb-2 pt-2 pb-2">
+                        <MudAlert Severity="@MultiplierColor" Variant="Variant.Filled">Current Multiplier:<MudText Typo="Typo.h4"> @Multiplier X</MudText></MudAlert>
+                    </MudItem>
+                    <MudItem xs="12" Class="mb-2 pt-2 pb-2">
+                        <MudNumericField Disabled="disableInputs" @bind-Value="playerInfo.BetAmount" Label="Amount" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" AdornmentColor="Color.Warning" />
+                    </MudItem>
+                    <MudItem xs="12" Class="mb-2 pt-2 pb-2">
+                        <MudNumericField Disabled="disableInputs" @bind-Value="playerInfo.AutoCashOut" Label="Auto Cashout In" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.MonetizationOn" AdornmentColor="Color.Warning" />
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions Class="mb-2 pt-2 pb-2">
+                    @*@if (!isRunning)*@
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@placeBetDisable" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => SetisRunning(false)" Class="mb-2 pt-2 pb-2 ml-auto">Place Bet</MudButton>
+                    @*else*@
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@cashOutDisable" Variant="Variant.Filled" Color="Color.Error" OnClick="() => SetisRunning(true)" Class=" mb-2 pt-2 pb-2 ml-auto">Cash Out</MudButton>
+
+
+                </MudCardActions>
+            </MudCard>
+            <MudText Typo="Typo.body2" Align="Align.Center" Class="my-4">
+                Place your bets.
+            </MudText>
+            <MudExpansionPanels>
+
+                <MudText Typo="Typo.body2" Color="Color.Success" Align="Align.Center" Class="my-4">
+                    Unique Id: @HubConnectionId
+                </MudText>
+                <MudExpansionPanel Text="Joined party Successfully!!">
+                    <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                    </MudText>
+                </MudExpansionPanel>
+            @*<MudText Color="Color.Success">Success</MudText>*@
+
+            </MudExpansionPanels>
+        </EditForm>
+    </MudItem>
+
+    <MudItem xs=12 sm=6>
+        
+        <MudAlert Severity="Severity.Info" AlertTextPosition="AlertTextPosition.Start">GameStartsIn:  @GameStartsIn</MudAlert>
+        <MudItem xs="12" Class="mb-2 pt-2 pb-2">
+            <MudAlert Severity="@OnlineMultiplierColor" Variant="Variant.Filled">Online Multiplier:<MudText Typo="Typo.h4"> @OnlineMultiplier X</MudText></MudAlert>
+        </MudItem>
+        @foreach (decimal cp in CrashPointList)
+        {
+            <MudAlert Severity="Severity.Normal" Variant="Variant.Filled" Square="true" Class="my-2">Value crashed at: @cp</MudAlert>
+        }
+    </MudItem>
+</MudGrid>
+@*</div>*@

@@ -5,27 +5,27 @@ using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Data
 {
-    public class HubService : IAsyncDisposable
+    public class HubService : IDisposable
     {
         public HubConnection hubConnection { get; set; }
 
         private readonly NavigationManager _navigationManager;
-        public HubService(NavigationManager navigationManager)
-        {
-            _navigationManager = navigationManager;
-        }
-        public void OnInit()
-        {
-            hubConnection = new HubConnectionBuilder()
-                    .WithUrl(_navigationManager.ToAbsoluteUri("/gamehub"))
-                    .Build();
-        }
+        //public HubService(NavigationManager navigationManager)
+        //{
+        //    _navigationManager = navigationManager;
+        //}
+        //public void OnInit()
+        //{
+        //    hubConnection = new HubConnectionBuilder()
+        //            .WithUrl(_navigationManager.ToAbsoluteUri("/gameHub"))
+        //            .Build();
+        //}
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
             if (hubConnection is not null)
             {
-                await hubConnection.DisposeAsync();
+                hubConnection.DisposeAsync();
             }
         }
     }
