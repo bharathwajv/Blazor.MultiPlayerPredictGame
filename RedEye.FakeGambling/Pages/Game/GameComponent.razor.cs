@@ -37,7 +37,7 @@ namespace RedEye.FakeGambling.Pages.Game
             {
                 var encodedMsg = $"{_hubService.hubConnection.ConnectionId} : {crash}";
                 _gameService.JoinPlayerCrashPoint = crash;
-                StateHasChanged();
+                this.InvokeAsync(() => this.StateHasChanged());
             });
             if (_hubService.hubConnection.State != HubConnectionState.Connected)
             {
@@ -145,6 +145,8 @@ namespace RedEye.FakeGambling.Pages.Game
                     isRunning = false;
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
+                    string message = "Won "+ (_gameService.UserCash- playerInfo.PlayerBal).ToString() +"$";
+                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
                     playerInfo.PlayerBal = _gameService.UserCash;
                     break;
                 }
@@ -152,12 +154,16 @@ namespace RedEye.FakeGambling.Pages.Game
                 {
                     isRunning = false;
                     MultiplierColor = Severity.Error;
+                    string message = "Lost " + (playerInfo.BetAmount).ToString() + "$";
+                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
                     break;
                 }
                 else if (_gameService.Cashit == true)
                 {
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
+                    string message = "Won " + (_gameService.UserCash - playerInfo.PlayerBal).ToString() + "$";
+                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
                     playerInfo.PlayerBal = _gameService.UserCash;
                     break;
                 }

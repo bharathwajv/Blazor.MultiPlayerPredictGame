@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Data
@@ -17,7 +18,9 @@ namespace RedEye.FakeGambling.Data
         public string NameTag { get; set; }
 
         public bool isCreatePlayer { get; set; }
-       
+        public List<string> ChatMessages { get; set; } = new();
+        public List<string> LeaderboardsHistory { get; set; } = new();
+
         public void NewCrashPoint()
         {
             // Use RNGCryptoService function to create a very large random number, making the multiplier small.

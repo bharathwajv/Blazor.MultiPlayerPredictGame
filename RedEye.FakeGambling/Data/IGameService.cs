@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Data
 {
@@ -13,7 +14,8 @@ namespace RedEye.FakeGambling.Data
         bool isCreatePlayer { get; set; }
         decimal JoinPlayerCrashPoint { get; set; }
         decimal LastJoinPlayerCrashPoint { get; set; }
-
+        List<string> ChatMessages { get; set; }
+        List<string> LeaderboardsHistory { get; set; }
         void NewCrashPoint();
         void SetGeneralInfo();
     }

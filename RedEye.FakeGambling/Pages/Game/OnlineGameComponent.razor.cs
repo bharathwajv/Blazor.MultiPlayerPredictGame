@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using RedEye.FakeGambling.Data;
@@ -22,28 +23,30 @@ namespace RedEye.FakeGambling.Pages.Game
         public string HubConnectionId { get; set; }
 
         public PlayerInfo playerInfo;
-        public bool isRunning = false;
+        public bool isPlayerGameRunning = false;
+        public bool isGameRunning = false;
         public bool disableInputs = false;
         public bool cashOutDisable = true;
         public bool placeBetDisable = false;
+        public bool isTimetoBet { get; set; } = false;
         public List<decimal> CrashPointList = new();
         public bool IsHubConnected =>
          _hubService.hubConnection.State == HubConnectionState.Connected;
         protected override async Task OnInitializedAsync()
         {
             playerInfo = new() { BetAmount = 1, AutoCashOut = 1000, PlayerBal = 10, NameTag = _gameService.NameTag };
-            //isCreateLobby = _gameService.isCreatePlayer;
-
+            isCreateLobby = _gameService.isCreatePlayer;
+            if(isCreateLobby)
+                RecurringJob.AddOrUpdate<OnlineService>(x => x.UpdateCrashAsync(), "*/10 * * * * *");
             _hubService.hubConnection.On<string, decimal>("ReceiveOnlineCrash", async (nametag, crash) =>
             {
-                var encodedMsg = $"{_hubService.hubConnection.ConnectionId} : {crash}";
-                _gameService.JoinPlayerCrashPoint = crash;
-                for (GameStartsIn = 5M; GameStartsIn > 0; GameStartsIn = GameStartsIn - 0.01M)
+                if (!isGameRunning)
                 {
+                    var encodedMsg = $"{_hubService.hubConnection.ConnectionId} : {crash}";
+                    _gameService.JoinPlayerCrashPoint = crash;
+                    isTimetoBet = true;
                     StateHasChanged();
-                    await Task.Delay(1);
                 }
-                StateHasChanged();
             });
             if (_hubService.hubConnection.State != HubConnectionState.Connected)
             {
@@ -55,7 +58,7 @@ namespace RedEye.FakeGambling.Pages.Game
 
         public void SetisRunning(bool isRunning)
         {
-            this.isRunning = isRunning;
+            this.isPlayerGameRunning = isRunning;
         }
         public void CalculateCurrentCrash()
         {
@@ -63,30 +66,33 @@ namespace RedEye.FakeGambling.Pages.Game
         }
         public async Task OnValidSubmitAsync()
         {
-
-            if (isRunning)
-            {
-                //cashout
-                _gameService.Cashit = true;
-                disableInputs = false;
-                cashOutDisable = true;
-                placeBetDisable = false;
-                MultiplierColor = Severity.Info;
-            }
-            else
-            {
-                //place bet
-                if (_gameService.LastJoinPlayerCrashPoint == _gameService.JoinPlayerCrashPoint || _gameService.JoinPlayerCrashPoint == 0 || GameStartsIn != 0)
+            
+                if (isPlayerGameRunning)
                 {
-                    Snackbar.Add("Wait for Timer", Severity.Info, config => { config.HideIcon = true; });
+                    //cashout
+                    _gameService.Cashit = true;
+                    disableInputs = false;
+                    cashOutDisable = true;
+                    placeBetDisable = false;
+                    MultiplierColor = Severity.Info;
                 }
                 else
                 {
-                    _gameService.LastJoinPlayerCrashPoint = _gameService.JoinPlayerCrashPoint;
-                    GameStartsIn = 5M;
-                    await PlaceBet();
+                    //place bet
+                    if (_gameService.LastJoinPlayerCrashPoint == _gameService.JoinPlayerCrashPoint || _gameService.JoinPlayerCrashPoint == 0)
+                    {
+                        Snackbar.Add("Wait for Timer", Severity.Info, config => { config.HideIcon = true; });
+                    }
+                    else if (isGameRunning || !isTimetoBet)
+                    {
+                        Snackbar.Add("Wait for next round", Severity.Info, config => { config.HideIcon = true; });
+                    }
+                    else
+                    {
+                        _gameService.LastJoinPlayerCrashPoint = _gameService.JoinPlayerCrashPoint;
+                        await PlaceBet();
+                    }
                 }
-            }
             StateHasChanged();
         }
         public async Task PlaceBet()
@@ -111,12 +117,15 @@ namespace RedEye.FakeGambling.Pages.Game
                 Snackbar.Add("You do not have enough money to make that bet!", Severity.Error, config => { config.HideIcon = true; });
                 _gameService.BetAmount = 0;
             }
-            isRunning = true;
+            isPlayerGameRunning = true;
         }
         public async Task Animate()
         {
-            AnimateInternal();
-            CommonAnimation();
+            while (GameStartsIn != 0)
+            {
+                await Task.Delay(1);
+            }
+            await AnimateInternal();
         }
         public async Task AnimateInternal()
         {
@@ -124,7 +133,6 @@ namespace RedEye.FakeGambling.Pages.Game
             {
                 if (Multiplier >= playerInfo.AutoCashOut)
                 {
-                    isRunning = false;
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
                     playerInfo.PlayerBal = _gameService.UserCash;
@@ -132,7 +140,6 @@ namespace RedEye.FakeGambling.Pages.Game
                 }
                 else if (Multiplier >= _gameService.CrashPoint)
                 {
-                    isRunning = false;
                     MultiplierColor = Severity.Error;
                     break;
                 }
@@ -149,12 +156,13 @@ namespace RedEye.FakeGambling.Pages.Game
             disableInputs = true;
             placeBetDisable = true;
             cashOutDisable = true;
+            isPlayerGameRunning = false;
             StateHasChanged();
-            await Task.Delay(3000);
+            await Task.Delay(300);
             CalculateCurrentCrash();
             Multiplier = 1.00M;
             MultiplierColor = Severity.Normal;
-            isRunning = false;
+            
             disableInputs = false;
             placeBetDisable = false;
             cashOutDisable = true;
@@ -164,19 +172,6 @@ namespace RedEye.FakeGambling.Pages.Game
                 Snackbar.Add("You Lost! No Cash Available", Severity.Error, config => { config.HideIcon = true; });
             }
             StateHasChanged();
-        }
-        public async Task CommonAnimation()
-        {
-            for (OnlineMultiplier = 1.00M; OnlineMultiplier <= 1000000000; OnlineMultiplier = OnlineMultiplier + 0.01M)
-            {
-                if (OnlineMultiplier >= _gameService.CrashPoint)
-                {
-                    MultiplierColor = Severity.Error;
-                    break;
-                }
-                StateHasChanged();
-                await Task.Delay(1);
-            }
         }
         public void Dispose()
         {

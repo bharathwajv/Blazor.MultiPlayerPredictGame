@@ -6,26 +6,22 @@ using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Pages.Game
 {
-    public class LeaderboardBase : ComponentBase
+    public class ChatBase : ComponentBase
     {
 
-        public string nametag;
-        public string gameInfo;
         [Inject] private IGameService _gameService { get; set; }
         [Inject] private HubService _hubService { get; set; }
 
+        public ChatInfo info = new();
         protected override async Task OnInitializedAsync()
         {
-            nametag = _gameService.NameTag;
+            info.Name = _gameService.NameTag;
 
 
-            _hubService.hubConnection.On<string, string>("ReceiveMessage", (nametag, message) =>
+            _hubService.hubConnection.On<string, string>("ReceiveChatMessage", (nametag, message) =>
             {
-
                 var encodedMsg = $"{nametag}: {message}";
-                if (_gameService.LeaderboardsHistory.Count > 13)
-                    _gameService.LeaderboardsHistory.RemoveAt(0);
-                _gameService.LeaderboardsHistory.Add(encodedMsg);
+                _gameService.ChatMessages.Add(encodedMsg);
                 this.InvokeAsync(() => this.StateHasChanged());
             });
 
@@ -34,6 +30,16 @@ namespace RedEye.FakeGambling.Pages.Game
                 await _hubService.hubConnection.StartAsync();
             }
         }
+
+        public async Task Send()
+        {
+            if (_gameService.ChatMessages.Count > 13)
+                _gameService.ChatMessages.RemoveAt(0);
+            await _hubService.hubConnection.SendAsync("SendChatMessage", info.Name, info.Message);
+            info.Message = "";
+            StateHasChanged();
+        }
+
         public bool IsHubConnected =>
             _hubService.hubConnection.State == HubConnectionState.Connected;
 

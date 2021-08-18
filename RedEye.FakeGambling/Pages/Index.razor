@@ -13,9 +13,10 @@
                 <MudIcon Icon="@Icons.Material.Outlined.VideogameAsset" Size="Size.Large" Style="width:100px; height:100px;" />
             </MudPaper>
             <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Primary" Link="/Game/Solo">Single Player</MudButton>
-            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/MultiCreateOrJoin">1v1 Online</MudButton>
-            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/MultiOnline">Multi Online</MudButton>
-            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Disabled="true" Link="/Game/Leaderboard">Leaderboard</MudButton>
+            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/MultiCreateOrJoin">Multiplayer</MudButton>
+            @*<MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Color="Color.Secondary" Link="/Game/MultiCreateOrJoinOnline">Multi Online</MudButton>*@
+            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Link="/Game/Leaderboard">Leaderboard</MudButton>
+            <MudButton Class="mb-2 pt-2 pb-2" Variant="Variant.Outlined" Link="/Game/Chat">Chat</MudButton>
             <MudAlert Severity="Severity.Info" Class="mt-8 mud-width-full" Style="max-width:500px;">Start playing with friends.<a>Share link</a></MudAlert>
         </div>
     </MudContainer>
@@ -28,6 +29,5 @@
         _hubService.hubConnection = new HubConnectionBuilder()
            .WithUrl(_navigationManager.ToAbsoluteUri("/gameHub"))
            .Build();
-        RecurringJob.AddOrUpdate<OnlineService>(x => x.UpdateCrashAsync(), "*/10 * * * * *");
     }
 }

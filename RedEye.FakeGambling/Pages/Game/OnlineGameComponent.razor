@@ -49,10 +49,7 @@
 
     <MudItem xs=12 sm=6>
         
-        <MudAlert Severity="Severity.Info" AlertTextPosition="AlertTextPosition.Start">GameStartsIn:  @GameStartsIn</MudAlert>
-        <MudItem xs="12" Class="mb-2 pt-2 pb-2">
-            <MudAlert Severity="@OnlineMultiplierColor" Variant="Variant.Filled">Online Multiplier:<MudText Typo="Typo.h4"> @OnlineMultiplier X</MudText></MudAlert>
-        </MudItem>
+        <TimerComponent></TimerComponent>
         @foreach (decimal cp in CrashPointList)
         {
             <MudAlert Severity="Severity.Normal" Variant="Variant.Filled" Square="true" Class="my-2">Value crashed at: @cp</MudAlert>

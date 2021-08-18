@@ -5,6 +5,11 @@ namespace RedEye.FakeGambling.Hubs
 {
     public class GameHub : Hub
     {
+        public async Task SendChatMessage(string user, string message)
+        {
+            //var sameConnection = Clients.Clients(user);
+            await Clients.All.SendAsync("ReceiveChatMessage", user, message);
+        }
         public async Task SendMessage(string user, string message)
         {
             //var sameConnection = Clients.Clients(user);
