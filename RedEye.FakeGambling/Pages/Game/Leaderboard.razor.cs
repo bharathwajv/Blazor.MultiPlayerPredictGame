@@ -12,7 +12,7 @@ namespace RedEye.FakeGambling.Pages.Game
         public string nametag;
         public string gameInfo;
         [Inject] private IGameService _gameService { get; set; }
-        [Inject] private HubService _hubService { get; set; }
+        [Inject] private IHubService _hubService { get; set; }
 
         protected override async Task OnInitializedAsync()
         {

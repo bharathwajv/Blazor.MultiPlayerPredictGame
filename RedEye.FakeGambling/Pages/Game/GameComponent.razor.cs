@@ -12,7 +12,7 @@ namespace RedEye.FakeGambling.Pages.Game
         [Inject] private ISnackbar Snackbar { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] private IGameService _gameService { get; set; }
-        [Inject] private HubService _hubService { get; set; }
+        [Inject] private IHubService _hubService { get; set; }
         public bool isCreateLobby { get; set; }
         [Parameter] public bool isMutiplayer { get; set; } = false;
         public decimal Multiplier { get; set; } = 1.00M;

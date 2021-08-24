@@ -10,7 +10,7 @@ namespace RedEye.FakeGambling.Pages.Game
     {
 
         [Inject] private IGameService _gameService { get; set; }
-        [Inject] private HubService _hubService { get; set; }
+        [Inject] private IHubService _hubService { get; set; }
 
         public ChatInfo info = new();
         protected override async Task OnInitializedAsync()

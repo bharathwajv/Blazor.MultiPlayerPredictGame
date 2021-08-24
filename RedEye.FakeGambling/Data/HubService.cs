@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Data
 {
-    public class HubService : IDisposable
+    public class HubService : IDisposable, IHubService
     {
         public HubConnection hubConnection { get; set; }
 

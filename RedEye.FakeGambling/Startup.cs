@@ -27,10 +27,10 @@ namespace RedEye.FakeGambling
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
             _ = services.AddSingleton<IGameService, GameService>();
-           
-            services.AddSingleton<HubService>();
-            services.AddScoped<OnlineService>();
+            services.AddSingleton<IHubService, HubService>();
+            services.AddScoped<IOnlineService, OnlineService>();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -82,6 +82,7 @@ namespace RedEye.FakeGambling
 
             app.UseHangfireDashboard("/Hangfire");
             app.UseHangfireServer();
+            RecurringJob.AddOrUpdate<IOnlineService>(x => x.UpdateCrashAsync(), "*/10 * * * * *");
         }
     }
 }

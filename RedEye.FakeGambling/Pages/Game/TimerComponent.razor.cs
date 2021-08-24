@@ -13,7 +13,7 @@ namespace RedEye.FakeGambling.Pages.Game
         [Inject] private ISnackbar Snackbar { get; set; }
         [Inject] IDialogService Dialog { get; set; }
         [Inject] private IGameService _gameService { get; set; }
-        [Inject] private HubService _hubService { get; set; }
+        [Inject] private IHubService _hubService { get; set; }
         public Severity OnlineMultiplierColor { get; set; } = Severity.Normal;
         protected override async Task OnInitializedAsync()
         {
