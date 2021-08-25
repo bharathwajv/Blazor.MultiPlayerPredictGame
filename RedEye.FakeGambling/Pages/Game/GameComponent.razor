@@ -1,4 +1,5 @@
 ﻿@inherits GameComponentBase
+@using RedEye.FakeGambling.Pages.Game
 <h3>GameComponent</h3>
 
 @*<div style="max-width: 400px;">*@
@@ -13,12 +14,34 @@
                     <MudItem xs="12" Class="mb-2 pt-2 pb-2">
                         <MudAlert Severity="@MultiplierColor" Variant="Variant.Filled">Current Multiplier:<MudText Typo="Typo.h4"> @Multiplier X</MudText></MudAlert>
                     </MudItem>
-                    <MudItem xs="12" Class="mb-2 pt-2 pb-2">
-                        <MudNumericField Disabled="disableInputs" @bind-Value="playerInfo.BetAmount" Label="Amount" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" AdornmentColor="Color.Warning" />
-                    </MudItem>
+                    <MudGrid>
+                        <MudItem xs=12 sm=8 Class="mb-2 pt-2 pb-2">
+                            <MudNumericField Disabled="disableInputs" @bind-Value="playerInfo.BetAmount" Label="Amount" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" AdornmentColor="Color.Warning" />
+                        </MudItem>
+                        <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Secondary" OnClick="() => MaskeItHalf()">
+                                <MudText Typo="Typo.h5"> ½ </MudText>
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Secondary" OnClick="() => MaskeTwice()">
+                                <MudText Typo="Typo.h5"> 2x </MudText>
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Tertiary" OnClick="() => SetAmountMax()">
+                                Max
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+
                     <MudItem xs="12" Class="mb-2 pt-2 pb-2">
                         <MudNumericField Disabled="disableInputs" @bind-Value="playerInfo.AutoCashOut" Label="Auto Cashout In" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.MonetizationOn" AdornmentColor="Color.Warning" />
                     </MudItem>
+
                 </MudCardContent>
                 <MudCardActions Class="mb-2 pt-2 pb-2">
                     @*@if (!isRunning)*@
@@ -34,38 +57,51 @@
             </MudText>
             @if (isMutiplayer)
             {
-               
-        <MudExpansionPanels>
 
-            <MudText Typo="Typo.body2" Color="Color.Success" Align="Align.Center" Class="my-4">
-               Unique Id: @HubConnectionId
-            </MudText>
-            
-            @if (isCreateLobby)
+                <MudExpansionPanels>
 
-            {
-                <MudExpansionPanel Text="You are the Leader!!">
-                    <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                    <MudText Typo="Typo.body2" Color="Color.Success" Align="Align.Center" Class="my-4">
+                        Unique Id: @HubConnectionId
                     </MudText>
-                </MudExpansionPanel>
-            }
-            else
-            {<MudExpansionPanel Text="Joined party Successfully!!">
-                    <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
-                    </MudText>
-                </MudExpansionPanel>
-            }
-            @*<MudText Color="Color.Success">Success</MudText>*@
 
-        </MudExpansionPanels>
+                    @if (isCreateLobby)
+
+                    {
+                        <MudExpansionPanel Text="You are the Leader!!">
+                            <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                            </MudText>
+                        </MudExpansionPanel>
+                    }
+                    else
+                    {<MudExpansionPanel Text="Joined party Successfully!!">
+                            <MudText Color="Color.Success" Align="Align.Center" Class="my-4">
+                            </MudText>
+                        </MudExpansionPanel>
+                    }
+                    @*<MudText Color="Color.Success">Success</MudText>*@
+
+                </MudExpansionPanels>
             }
         </EditForm>
     </MudItem>
 
     <MudItem xs=12 sm=6>
-        @foreach (decimal cp in CrashPointList)
-        {
-            <MudAlert Severity="Severity.Normal" Variant="Variant.Filled" Square="true" Class="my-2">Value crashed at: @cp</MudAlert>}
+        Graph
     </MudItem>
+    <MudItem xs=12 sm=6>
+        <Leaderboard></Leaderboard>
+    </MudItem>
+    <MudItem xs=12 sm=6>
+        @foreach (decimal cp in CrashPointList.Reverse<decimal>())
+        {
+            if (cp > 2.00m)
+            {
+                <MudAvatar Size="Size.Medium" Color="Color.Success"><MudText Typo="Typo.body2"> @cp.ToString("F")</MudText></MudAvatar>}
+            else
+            {
+                <MudAvatar Size="Size.Medium" Color="Color.Error"><MudText Typo="Typo.body2"> @cp.ToString("F")</MudText></MudAvatar>}
+        }
+    </MudItem>
+        <MudFab Icon="@Icons.Material.Filled.Chat" Label="Chat" OnClick="() => OpenChat()" />
 </MudGrid>
 @*</div>*@

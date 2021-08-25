@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using RedEye.FakeGambling.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Pages.Game
@@ -13,6 +14,7 @@ namespace RedEye.FakeGambling.Pages.Game
         [Inject] IDialogService Dialog { get; set; }
         [Inject] private IGameService _gameService { get; set; }
         [Inject] private IHubService _hubService { get; set; }
+        [Inject] IDialogService DialogService { get; set; }
         public bool isCreateLobby { get; set; }
         [Parameter] public bool isMutiplayer { get; set; } = false;
         public decimal Multiplier { get; set; } = 1.00M;
@@ -54,7 +56,18 @@ namespace RedEye.FakeGambling.Pages.Game
         public void CalculateCurrentCrash()
         {
             CrashPointList.Add(_gameService.CrashPoint);
+            if (CrashPointList.Count >= 10)
+            {
+                CrashPointList.Remove(CrashPointList.First());
+            }
         }
+        public void MaskeItHalf() =>
+            playerInfo.BetAmount /= 2;
+        public void MaskeTwice() =>
+            playerInfo.BetAmount *= 2;
+        public void SetAmountMax() =>
+            playerInfo.BetAmount = _gameService.UserCash;
+
         public async Task OnValidSubmitAsync()
         {
 
@@ -105,10 +118,6 @@ namespace RedEye.FakeGambling.Pages.Game
                     _gameService.NewCrashPoint();
                 if (isCreateLobby && isMutiplayer)
                     await _hubService.hubConnection.SendAsync("SendCrash", playerInfo.NameTag, _gameService.CrashPoint);
-                if (CrashPointList.Count >= 18)
-                {
-                    CrashPointList.Clear();
-                }
                 await Animate();
             }
             else if (_gameService.UserCash < _gameService.BetAmount)
@@ -192,6 +201,11 @@ namespace RedEye.FakeGambling.Pages.Game
         public void Dispose()
         {
             //clear connection
+        }
+        public void OpenChat()
+        {
+            _ = DialogService.Show<Chat>().Result;
+
         }
     }
 }

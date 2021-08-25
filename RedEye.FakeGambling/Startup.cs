@@ -82,7 +82,7 @@ namespace RedEye.FakeGambling
 
             app.UseHangfireDashboard("/Hangfire");
             app.UseHangfireServer();
-            RecurringJob.AddOrUpdate<IOnlineService>(x => x.UpdateCrashAsync(), "*/10 * * * * *");
+            //RecurringJob.AddOrUpdate<IOnlineService>(x => x.UpdateCrashAsync(), "*/10 * * * * *");
         }
     }
 }

@@ -31,7 +31,7 @@ namespace RedEye.FakeGambling.Pages.Game
 
             if (!IsHubConnected)
             {
-                await _hubService.hubConnection.StartAsync();
+               // await _hubService.hubConnection.StartAsync();
             }
         }
         public bool IsHubConnected =>

@@ -4,11 +4,11 @@
     @inherits ChatBase
 
 
-    <MudPaper>
+    <MudPaper >
 
         <MudCard>
             <MudText Typo="Typo.h6" GutterBottom="true">Live Chat</MudText>
-            <MudPaper Width="100%">
+            <MudPaper Style="max-height: 500px; max-Width: 400px; overflow-y: scroll">
                 <MudList Clickable="true">
                     @foreach (var msg in _gameService.ChatMessages)
                     {
