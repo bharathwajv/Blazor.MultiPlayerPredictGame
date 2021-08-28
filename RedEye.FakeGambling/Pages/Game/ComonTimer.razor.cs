@@ -14,7 +14,6 @@ namespace RedEye.FakeGambling.Pages.Game
         [Inject] IDialogService Dialog { get; set; }
         [Inject] private IGameService _gameService { get; set; }
         [Inject] private IHubService _hubService { get; set; }
-        public Severity OnlineMultiplierColor { get; set; } = Severity.Normal;
         protected override async Task OnInitializedAsync()
         {
             _hubService.hubConnection.On("ReceiveStartComon", (System.Func<decimal, Task>)(async (crash) =>
@@ -22,7 +21,8 @@ namespace RedEye.FakeGambling.Pages.Game
                 if (!_gameService.IsRunning)
                 {
                     //_gameService.JoinPlayerCrashPoint = crash;
-                    await CommonAnimation();
+                    CommonAnimation();
+                    SecondsTimer();
                     StateHasChanged();
                 }
             }));
@@ -34,13 +34,16 @@ namespace RedEye.FakeGambling.Pages.Game
             {
                 if (Multiplier >= _gameService.CrashPoint)
                 {
-                    OnlineMultiplierColor = Severity.Error;
                     break;
                 }
                 StateHasChanged();
                 await Task.Delay(1);
             }
             _gameService.IsRunning = false;
+        }
+        public void SecondsTimer()
+        {
+
         }
     }
 }
