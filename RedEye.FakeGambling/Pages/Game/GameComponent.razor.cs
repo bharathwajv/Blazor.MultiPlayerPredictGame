@@ -23,11 +23,11 @@ namespace RedEye.FakeGambling.Pages.Game
         public string HubConnectionId { get; set; }
 
         public PlayerInfo playerInfo;
-        public bool isRunning = false;
         public bool disableInputs = false;
         public bool cashOutDisable = true;
         public bool placeBetDisable = false;
         public List<decimal> CrashPointList = new();
+      
         public bool IsHubConnected =>
          _hubService.hubConnection.State == HubConnectionState.Connected;
         protected override async Task OnInitializedAsync()
@@ -51,7 +51,7 @@ namespace RedEye.FakeGambling.Pages.Game
        
         public void SetisRunning(bool isRunning)
         {
-            this.isRunning = isRunning;
+            _gameService.IsRunning = isRunning;
         }
         public void CalculateCurrentCrash()
         {
@@ -71,7 +71,7 @@ namespace RedEye.FakeGambling.Pages.Game
         public async Task OnValidSubmitAsync()
         {
 
-            if (isRunning)
+            if (_gameService.IsRunning)
             {
                 //cashout
                 _gameService.Cashit = true;
@@ -83,7 +83,11 @@ namespace RedEye.FakeGambling.Pages.Game
             else
             {
                 //place bet
-                if (isCreateLobby && isMutiplayer)
+                if (_gameService.IsRunning)
+                {
+                    Snackbar.Add("Wait for next round", Severity.Info, config => { config.HideIcon = true; });
+                }
+                else if (isCreateLobby && isMutiplayer)
                 {
                     await PlaceBet();
                 }
@@ -115,7 +119,10 @@ namespace RedEye.FakeGambling.Pages.Game
                 _gameService.UserCash -= _gameService.BetAmount;
                 playerInfo.PlayerBal = _gameService.UserCash;
                 if (isCreateLobby || !isMutiplayer)
+                {
                     _gameService.NewCrashPoint();
+                    await _hubService.hubConnection.SendAsync("SendStartComon", _gameService.JoinPlayerCrashPoint);
+                }
                 if (isCreateLobby && isMutiplayer)
                     await _hubService.hubConnection.SendAsync("SendCrash", playerInfo.NameTag, _gameService.CrashPoint);
                 await Animate();
@@ -125,7 +132,6 @@ namespace RedEye.FakeGambling.Pages.Game
                 Snackbar.Add("You do not have enough money to make that bet!", Severity.Error, config => { config.HideIcon = true; });
                 _gameService.BetAmount = 0;
             }
-            isRunning = true;
         }
         public async Task Animate()
         {
@@ -151,7 +157,6 @@ namespace RedEye.FakeGambling.Pages.Game
             {
                 if (Multiplier >= playerInfo.AutoCashOut)
                 {
-                    isRunning = false;
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
                     string message = "Won "+ (_gameService.UserCash- playerInfo.PlayerBal).ToString() +"$";
@@ -161,7 +166,6 @@ namespace RedEye.FakeGambling.Pages.Game
                 }
                 else if (Multiplier >= _gameService.CrashPoint)
                 {
-                    isRunning = false;
                     MultiplierColor = Severity.Error;
                     string message = "Lost " + (playerInfo.BetAmount).ToString() + "$";
                     await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
@@ -183,11 +187,14 @@ namespace RedEye.FakeGambling.Pages.Game
             placeBetDisable = true;
             cashOutDisable = true;
             StateHasChanged();
+            do
+            {
+                await Task.Delay(1);
+            } while (_gameService.IsRunning);
             await Task.Delay(3000);
             CalculateCurrentCrash();
             Multiplier = 1.00M;
             MultiplierColor = Severity.Normal;
-            isRunning = false;
             disableInputs = false;
             placeBetDisable = false;
             cashOutDisable = true;

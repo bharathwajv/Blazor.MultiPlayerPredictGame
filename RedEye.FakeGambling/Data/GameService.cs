@@ -20,6 +20,7 @@ namespace RedEye.FakeGambling.Data
         public bool isCreatePlayer { get; set; }
         public List<string> ChatMessages { get; set; } = new();
         public List<string> LeaderboardsHistory { get; set; } = new();
+        public bool IsRunning { get; set; } = false;
 
         public void NewCrashPoint()
         {

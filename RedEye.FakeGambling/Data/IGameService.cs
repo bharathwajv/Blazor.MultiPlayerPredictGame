@@ -18,5 +18,6 @@ namespace RedEye.FakeGambling.Data
         List<string> LeaderboardsHistory { get; set; }
         void NewCrashPoint();
         void SetGeneralInfo();
+        bool IsRunning { get; set; }
     }
 }
