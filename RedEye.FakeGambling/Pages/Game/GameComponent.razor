@@ -21,13 +21,13 @@
                         <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
                             <MudButton Variant="Variant.Outlined"
                                        Color="Color.Secondary" OnClick="() => MaskeItHalf()">
-                                <MudText Typo="Typo.h5"> ½ </MudText>
+                                <MudText Typo="Typo.h6"> ½ </MudText>
                             </MudButton>
                         </MudItem>
                         <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
                             <MudButton Variant="Variant.Outlined"
                                        Color="Color.Secondary" OnClick="() => MaskeTwice()">
-                                <MudText Typo="Typo.h5"> 2x </MudText>
+                                <MudText Typo="Typo.h6"> 2x </MudText>
                             </MudButton>
                         </MudItem>
                         <MudItem xs=12 sm=1 Class="ma-auto pa-auto ">
@@ -88,12 +88,7 @@
 
     <MudItem xs=12 sm=6>
         <ComonTimer></ComonTimer>
-        <GraphChart></GraphChart>
-    </MudItem>
-    <MudItem xs=12 sm=6>
-       
-    </MudItem>
-    <MudItem xs=12 sm=6>
+        @*<GraphChart></GraphChart>*@
         @foreach (decimal cp in CrashPointList.Reverse<decimal>())
         {
             if (cp > 2.00m)
@@ -103,6 +98,12 @@
             {
                 <MudAvatar Size="Size.Medium" Color="Color.Error"><MudText Typo="Typo.body2"> @cp.ToString("F")</MudText></MudAvatar>}
         }
+    </MudItem>
+    <MudItem xs=12 sm=6>
+       
+    </MudItem>
+    <MudItem xs=12 sm=6>
+      
     </MudItem>
         <MudFab Icon="@Icons.Material.Filled.Chat" Label="Chat" OnClick="() => OpenChat()" />
 </MudGrid>

@@ -1,4 +1,5 @@
-﻿function generateLineChart(Mul, Seconds) {
+﻿function generateLineChart(Mul, Seconds, Name, RocketPos, PlayerPos) {
+    $("#chart").empty();
     var options = {
         series: [{
             data: Mul
@@ -10,8 +11,8 @@
         },
         annotations: {
             points: [{
-                x: 2,
-                y: 2.1,
+                x: PlayerPos.mul,
+                y: PlayerPos.sec,
                 marker: {
                     size: 8,
                     fillColor: '#fff',
@@ -27,11 +28,11 @@
                         background: '#FF4560',
                     },
 
-                    text: 'Point Annotation',
+                    text: Name,
                 }
             }, {
-                x: 2.1,
-                y: 2,
+                x: RocketPos.mul,
+                y: RocketPos.sec,
                 marker: {
                     size: 0
                 },
