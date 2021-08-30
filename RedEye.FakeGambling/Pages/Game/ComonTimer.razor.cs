@@ -46,9 +46,9 @@ namespace RedEye.FakeGambling.Pages.Game
                     break;
                 }
                 deciTmp = Decimal.Round(Multiplier, 1);
-                //if (!Mult.Contains(deciTmp))
-                //    AnimateAsync();
-                //SecondsTimer();
+                if (!Mult.Contains(deciTmp))
+                    AnimateAsync();
+                SecondsTimer();
                 StateHasChanged();
                 await Task.Delay(1);
             }
@@ -63,7 +63,8 @@ namespace RedEye.FakeGambling.Pages.Game
             if (Mult.Count > 6)
                 Mult.Remove(Mult.First());
             Mult.Add(deciTmp);
-            await JsRuntime.InvokeVoidAsync("generateLineChart", Mult, Seconds, _gameService.NameTag, RocketPos, PlayerPos);
+            // await JsRuntime.InvokeVoidAsync("generateLineChart", Mult, Seconds, _gameService.NameTag, RocketPos, PlayerPos);
+            await _hubService.hubConnection.SendAsync("SendChart", Mult, Seconds, _gameService.NameTag);//, RocketPos, PlayerPos);
         }
         public async Task SecondsTimer()
         {

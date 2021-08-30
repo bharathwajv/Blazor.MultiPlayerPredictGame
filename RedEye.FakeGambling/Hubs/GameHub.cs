@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RedEye.FakeGambling.Hubs
@@ -30,6 +31,11 @@ namespace RedEye.FakeGambling.Hubs
             //var sameConnection = Clients.Clients(user);
             await Clients.All.SendAsync("ReceiveStartComon", message);
         }
-        
+
+        public async Task SendChart(List<decimal> mul, List<string> sec, string name)
+        {
+            //var sameConnection = Clients.Clients(user);
+            await Clients.All.SendAsync("ReceiveChart", mul, sec, name);
+        }
     }
 }
