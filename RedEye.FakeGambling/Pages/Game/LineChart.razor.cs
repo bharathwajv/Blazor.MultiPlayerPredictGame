@@ -15,14 +15,19 @@ namespace RedEye.FakeGambling.Pages.Game
         public ChartOptions options = new();
         public List<ChartSeries> Series = new()
         {
-             new ChartSeries()
-             {
-                 Name = playerName,
-                 Data = new double[] { 0.0, 0.1, 0.2, 0.3, 0.0, 0.1, 0.2, 0.3 }
-             }
+            new ChartSeries()
+            {
+                Name = playerName,
+                Data = new double[] { 0 }
+            },
+            new ChartSeries()
+            {
+                Name = playerName,
+                Data = new double[] {0}
+            }
         };
-        public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
-        public static string playerName ="";
+        public string[] XAxisLabels = { "0s"};
+        public static string playerName = "";
         protected override void OnInitialized()
         {
             playerName = _game.NameTag;
@@ -32,8 +37,9 @@ namespace RedEye.FakeGambling.Pages.Game
             //    Data = new double[] { 0.0, 0.1, 0.2, 0.3 }
             //});
             //XAxisLabels = ["0s", "1s", "2s", "3s"];
-            options.InterpolationOption = InterpolationOption.EndSlope;
-            options.YAxisFormat = "c2";
+            //options.InterpolationOption = InterpolationOption.Periodic;
+            //options.YAxisFormat = "c2";
+            options.YAxisTicks = 1;
 
             _hubService.hubConnection.On("ReceiveChart", (List<decimal> mul, List<string> sec, string name) =>
             {
@@ -42,16 +48,11 @@ namespace RedEye.FakeGambling.Pages.Game
                     var ary = mul.Select(item => Convert.ToDouble(item)).ToArray();
                     Series.First().Data = ary;
                     Series.First().Name = name;
-                    //XAxisLabels = sec.ToArray();
+                    XAxisLabels = sec.ToArray();
                     //_gameService.JoinPlayerCrashPoint = crash;
-                    Animation();
                     StateHasChanged();
                 }
             });
-        }
-        public void Animation()
-        {
-
         }
     }
 }

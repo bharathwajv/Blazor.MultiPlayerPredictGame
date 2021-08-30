@@ -24,6 +24,7 @@ namespace RedEye.FakeGambling.Pages.Game
         List<string> Seconds = new List<string> { "0s" };
         decimal deciTmp;
         int tmpTime = 0;
+        bool secTimerRunning = false;
         protected override async Task OnInitializedAsync()
         {
             _hubService.hubConnection.On("ReceiveStartComon", (System.Func<decimal, Task>)(async (crash) =>
@@ -45,10 +46,11 @@ namespace RedEye.FakeGambling.Pages.Game
                 {
                     break;
                 }
-                deciTmp = Decimal.Round(Multiplier, 1);
+                deciTmp = Decimal.Round(Multiplier, 0);
                 if (!Mult.Contains(deciTmp))
-                    AnimateAsync();
-                SecondsTimer();
+                    await AnimateAsync();
+                if(!secTimerRunning)
+                    SecondsTimer();
                 StateHasChanged();
                 await Task.Delay(1);
             }
@@ -60,14 +62,16 @@ namespace RedEye.FakeGambling.Pages.Game
         }
         public async Task AnimateAsync()
         {
-            if (Mult.Count > 6)
-                Mult.Remove(Mult.First());
+            //if (Mult.Count > 6)
+            //    Mult.Remove(Mult.First());
             Mult.Add(deciTmp);
             // await JsRuntime.InvokeVoidAsync("generateLineChart", Mult, Seconds, _gameService.NameTag, RocketPos, PlayerPos);
-            await _hubService.hubConnection.SendAsync("SendChart", Mult, Seconds, _gameService.NameTag);//, RocketPos, PlayerPos);
+           await _hubService.hubConnection.SendAsync("SendChart", Mult, Seconds, _gameService.NameTag);//, RocketPos, PlayerPos);
         }
         public async Task SecondsTimer()
         {
+            secTimerRunning = true;
+
             while (_gameService.IsRunning)
             {
                 await Task.Delay(1000);
@@ -75,6 +79,7 @@ namespace RedEye.FakeGambling.Pages.Game
             }
             Seconds = new List<string> { "0s" };
             tmpTime = 0;
+            secTimerRunning = false;
 
         }
         public void AddSec()
