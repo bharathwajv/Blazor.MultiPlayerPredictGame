@@ -160,7 +160,7 @@ namespace RedEye.FakeGambling.Pages.Game
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
                     string message = "Won "+ (_gameService.UserCash- playerInfo.PlayerBal).ToString() +"$";
-                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
+                    await SendInfos(message);
                     playerInfo.PlayerBal = _gameService.UserCash;
                     break;
                 }
@@ -168,7 +168,7 @@ namespace RedEye.FakeGambling.Pages.Game
                 {
                     MultiplierColor = Severity.Error;
                     string message = "Lost " + (playerInfo.BetAmount).ToString() + "$";
-                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
+                    await SendInfos(message);
                     break;
                 }
                 else if (_gameService.Cashit == true)
@@ -176,7 +176,7 @@ namespace RedEye.FakeGambling.Pages.Game
                     MultiplierColor = Severity.Success;
                     _gameService.UserCash += _gameService.BetAmount * Multiplier;
                     string message = "Won " + (_gameService.UserCash - playerInfo.PlayerBal).ToString() + "$";
-                    await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
+                    await SendInfos(message);
                     playerInfo.PlayerBal = _gameService.UserCash;
                     break;
                 }
@@ -186,12 +186,15 @@ namespace RedEye.FakeGambling.Pages.Game
             disableInputs = true;
             placeBetDisable = true;
             cashOutDisable = true;
+          
             StateHasChanged();
             do
             {
                 await Task.Delay(1);
             } while (_gameService.IsRunning);
+            
             await Task.Delay(3000);
+            await _hubService.hubConnection.SendAsync("SendDeleteChart");
             CalculateCurrentCrash();
             Multiplier = 1.00M;
             MultiplierColor = Severity.Normal;
@@ -208,6 +211,11 @@ namespace RedEye.FakeGambling.Pages.Game
         public void Dispose()
         {
             //clear connection
+        }
+        public async Task SendInfos(string message)
+        {
+            await _hubService.hubConnection.SendAsync("SendMessage", playerInfo.NameTag, message);
+            await _hubService.hubConnection.SendAsync("SendPlayerCrash", playerInfo.NameTag, Multiplier);
         }
         public void OpenChat()
         {

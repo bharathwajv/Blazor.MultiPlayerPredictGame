@@ -17,16 +17,11 @@ namespace RedEye.FakeGambling.Pages.Game
         {
             new ChartSeries()
             {
-                Name = playerName,
+                Name = "Game",
                 Data = new double[] { 0 }
-            },
-            new ChartSeries()
-            {
-                Name = playerName,
-                Data = new double[] {0}
             }
         };
-        public string[] XAxisLabels = { "0s"};
+        public string[] XAxisLabels = { "0s" };
         public static string playerName = "";
         protected override void OnInitialized()
         {
@@ -46,12 +41,28 @@ namespace RedEye.FakeGambling.Pages.Game
                 //if (!_game.IsRunning)
                 {
                     var ary = mul.Select(item => Convert.ToDouble(item)).ToArray();
-                    Series.First().Data = ary;
-                    Series.First().Name = name;
+                    // Series.First().Data = ary;
+                    //Series.First().Name = name;
+                    Series.First().Data = new double[] { 0, ary.Last(), 0 };
                     XAxisLabels = sec.ToArray();
                     //_gameService.JoinPlayerCrashPoint = crash;
-                    StateHasChanged();
+                    this.InvokeAsync(() => this.StateHasChanged());
                 }
+            });
+            _hubService.hubConnection.On<string, double>("ReceivePlayerCrash", (nametag, mul) =>
+            {
+                Series.Add(new() { Data = new double[] { 0, mul, 0 }, Name = nametag });
+                this.InvokeAsync(() => this.StateHasChanged());
+            });
+            _hubService.hubConnection.On("DeleteChart", () =>
+            {
+                Series.Clear();
+                Series.Add(new()
+                {
+                    Name = "Game",
+                    Data = new double[] { 0 }
+                });
+                this.InvokeAsync(() => this.StateHasChanged());
             });
         }
     }

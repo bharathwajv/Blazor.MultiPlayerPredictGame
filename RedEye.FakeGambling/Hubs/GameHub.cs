@@ -16,6 +16,17 @@ namespace RedEye.FakeGambling.Hubs
             //var sameConnection = Clients.Clients(user);
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+        public async Task SendPlayerCrash(string user, decimal crash)
+        {
+            //var sameConnection = Clients.Clients(user);
+            await Clients.All.SendAsync("ReceivePlayerCrash", user, crash);
+        }
+        public async Task SendDeleteChart()
+        {
+            //var sameConnection = Clients.Clients(user);
+            await Clients.All.SendAsync("DeleteChart");
+        }
+        
         public async Task SendCrash(string user, decimal message)
         {
             //var sameConnection = Clients.Clients(user);
